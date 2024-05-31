@@ -8,8 +8,9 @@
         <th>Total</th>
     </tr></thead>
     <?php
-    $q = esc_field($_GET['q']);
-    $rows = $db->get_results("SELECT * FROM tb_alternatif WHERE nama_alternatif LIKE '%$q%' ORDER BY total DESC");
+    // $q = esc_field($_GET['q']);
+    // $rows = $db->get_results("SELECT * FROM tb_alternatif WHERE nama_alternatif LIKE '%$q%' ORDER BY total DESC");
+    $rows = $db->get_results("SELECT * FROM tb_alternatif ORDER BY total DESC");
     $no=0;
 
     foreach($rows as $row):?>

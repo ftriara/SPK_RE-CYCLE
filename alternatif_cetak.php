@@ -7,8 +7,9 @@
         <th>Keterangan</th>
     </tr></thead>
     <?php
-    $q = esc_field($_GET['q']);
-    $rows = $db->get_results("SELECT * FROM tb_alternatif WHERE nama_alternatif LIKE '%$q%' ORDER BY kode_alternatif");
+    // $q = esc_field($_GET['q']);
+    // $rows = $db->get_results("SELECT * FROM tb_alternatif WHERE nama_alternatif LIKE '%$q%' ORDER BY kode_alternatif");
+    $rows = $db->get_results("SELECT * FROM tb_alternatif ORDER BY kode_alternatif");
     $no=0;
 
     foreach($rows as $row):?>

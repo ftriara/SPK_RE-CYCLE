@@ -128,6 +128,9 @@ function AHP_get_total_kolom($matriks = array()){
     $total = array();        
     foreach($matriks as $key => $value){
         foreach($value as $k => $v){
+            if (!isset($total[$k])) {
+                $total[$k] = 0;
+            }
             $total[$k]+=$v;
         }
     }  
@@ -160,6 +163,9 @@ function AHP_mmult($matriks = array(), $rata = array()){
 	foreach($matriks as $key => $value){
         $no=0;
 		foreach($value as $k => $v){
+            if (!isset($data[$key])) {
+                $data[$key] = 0;
+            }
 			$data[$key]+=$v*$rata[$no];       
             $no++;  
 		}				

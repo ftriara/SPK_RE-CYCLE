@@ -9,13 +9,10 @@ include'functions.php';
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content="Sistem Pendukung Keputusan (SPK) Metode Analytical Hierarchy Proccess(AHP) dan Technique For Others Reference by Similarity to Ideal Solution (TOPSIS) berbasis web dengan PHP dan MySQL. Studi kasus: pemilihan handphone."/>
-    <meta name="keywords" content="Sistem Pendukung Keputusan, Decision Support System, Analytical Hierarchy Proccess, AHP, Technique For Others Reference by Similarity to Ideal Solution, TOPSIS, Pemilihan Handphone, Tugas Akhir, Skripsi, Jurnal, Source Code, PHP, MySQL, CSS, JavaScript, Bootstrap, jQuery"/>
-    <meta name="author" content="herdikayan"/>
     <link rel="icon" href="favicon.ico"/>
-    <link rel="canonical" href="http://tugasakhir.web.id/spk-ahp-topsis/" />
     
     <title>RE-CYCLE</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="assets/css/flatly-bootstrap.min.css" rel="stylesheet"/>
     <link href="assets/css/general.css" rel="stylesheet"/>
     <script src="assets/js/jquery.min.js"></script>
