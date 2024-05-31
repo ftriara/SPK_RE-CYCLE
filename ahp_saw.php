@@ -2,7 +2,7 @@
     .text-primary{font-weight: bold;}
 </style>
 <div class="page-header">
-    <h1>Perhitungan</h1>
+    <h1>AHP-SAW</h1>
 </div>
 <?php    
     $c = $db->get_results("SELECT * FROM tb_rel_alternatif WHERE nilai>0");
@@ -18,7 +18,7 @@
     <div class="panel panel-default">
         <div role="button" class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#c11" aria-expanded="false" aria-controls="c11" style="background-color: #2C3E50; color:white;">
             <strong>Matriks Perbandingan Kriteria</strong>
-            <i class="bi bi-chevron-down"></i>
+            <span class="glyphicon glyphicon-menu-down"></span>
         </div>
         <div class="panel-body collapse" id="c11">
             <strong>Pairwise Comparison</strong>
@@ -55,7 +55,7 @@
     <div class="panel panel-default">
         <div role="button" class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#c12" aria-expanded="false" aria-controls="c12" style="background-color: #2C3E50; color:white;">
             <strong>Matriks Bobot Prioritas Kriteria</strong>
-            <i class="bi bi-chevron-down"></i>
+            <span class="glyphicon glyphicon-menu-down"></span>
         </div>
         <div class="panel-body collapse" id="c12">
             <p>Setelah terbentuk matrik perbandingan maka dilihat bobot prioritas untuk perbandingan  kriteria.  
@@ -94,7 +94,7 @@
     <div class="panel panel-default">
         <div role="button" class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#c13" aria-expanded="false" aria-controls="c13" style="background-color: #2C3E50; color:white;">
             <strong>Matriks Konsistensi Kriteria</strong>
-            <i class="bi bi-chevron-down"></i>
+            <span class="glyphicon glyphicon-menu-down"></span>
         </div>
         <div class="panel-body collapse" id="c13">
             <p>Untuk  mengetahui  konsisten  matriks  perbandingan dilakukan  perkalian  seluruh  isi  kolom  matriks  A  perbandingan  dengan  bobot prioritas  kriteria  A,  isi  kolom  B  matriks  perbandingan  dengan  bobot  prioritas kriteria  B  dan  seterusnya.  Kemudian  dijumlahkan  setiap  barisnya  dan  dibagi penjumlahan baris dengan bobot prioritas bersesuaian seperti terlihat pada tabel berikut.</p> 
@@ -109,7 +109,7 @@
                         echo "<th class='nw'>$key</th>";
                         $no++;      
                     }      
-                    echo "<th>Bobot</th></tr></thead>";  
+                    echo "<th>Consistency Matrix</th></tr></thead>";  
                     $no=1;
                     foreach($normal as $key => $value){
                         echo "<tr>";
@@ -172,14 +172,14 @@
 </div>
 
 <div class="panel panel-primary">
-    <div class="panel-heading"><strong>Perhitungan TOPSIS</strong></div>
+    <div class="panel-heading"><strong>Perhitungan SAW</strong></div>
     <div class="panel-body">
         <div class="panel panel-primary">
             <div class="panel-heading"><strong>Hasil Analisa</strong></div>
-            <div class="panel-body oxa"> 
+            <div class="panel-body oxa">
                 <table class="table table-bordered table-striped table-hover">
                 <?php                                            
-                    echo TOPSIS_hasil_analisa();                    
+                    echo SAW_hasil_analisa();                    
                 ?>
                 </table>
             </div>
@@ -190,28 +190,28 @@
             <div class="panel-body oxa">
                 <table class="table table-bordered table-striped table-hover">
                 <?php    
-                            
-                $normal = TOPSIS_nomalize(TOPSIS_get_hasil_analisa(false));
-                
-                $r = "<tr><th></th>";   	
-                $no=1;	
-                foreach($normal[key($normal)] as $key => $value){
-                    $r.= "<th>$key</th>";
+                $hasil_analisa = SAW_get_hasil_analisa(false);
+                $normal_saw = SAW_normalize($hasil_analisa);
+
+                $r = "<tr><th></th>";    
+                $no = 1;    
+                foreach ($normal_saw[key($normal_saw)] as $key => $value) {
+                    $r .= "<th>$key</th>";
                     $no++;      
                 }    
-                
-                $no=1;	
-                foreach($normal as $key => $value){
-                    $r.= "<tr>";
-                    $r.= "<th>A".$no."</th>";
-                    foreach($value as $k => $v){
-                        $r.= "<td>".round($v,5)."</td>";
+
+                $no = 1;    
+                foreach ($normal_saw as $key => $value) {
+                    $r .= "<tr>";
+                    $r .= "<th>A" . $no . "</th>";
+                    foreach ($value as $k => $v) {
+                        $r .= "<td>" . round($v, 5) . "</td>";
                     }        
-                    $r.= "</tr>";
+                    $r .= "</tr>";
                     $no++;    
                 }    
-                $r.= "</tr>"; 
-                echo  $r;
+                $r .= "</tr>"; 
+                echo $r;
                 ?>
                 </table>
             </div>
@@ -222,90 +222,30 @@
             <div class="panel-body oxa">
                 <table class="table table-bordered table-striped table-hover">
                 <?php    
-                $r="";            
-                $terbobot = TOPSIS_nomal_terbobot($normal, $rata);
-                
-                $r.= "<tr><th></th>";   	
-                $no=1;	
-                foreach($terbobot[key($terbobot)] as $key => $value){
-                    $r.= "<th>$key</th>";
+                $rata = AHP_get_rata(AHP_normalize(AHP_get_relkriteria(), AHP_get_total_kolom(AHP_get_relkriteria())));
+                $terbobot_saw = SAW_normal_terbobot($normal_saw, $rata);
+
+                $r = "<tr><th></th>";    
+                $no = 1;    
+                foreach ($terbobot_saw[key($terbobot_saw)] as $key => $value) {
+                    $r .= "<th>$key</th>";
                     $no++;      
                 }    
-                
-                $no=1;	
-                foreach($terbobot as $key => $value){
-                    $r.= "<tr>";
-                    $r.= "<th>$key</th>";
-                    foreach($value as $k => $v){
-                        $r.= "<td>".round($v,5)."</td>";
+
+                $no = 1;    
+                foreach ($terbobot_saw as $key => $value) {
+                    $r .= "<tr>";
+                    $r .= "<th>A" . $no . "</th>";
+                    foreach ($value as $k => $v) {
+                        $r .= "<td>" . round($v, 5) . "</td>";
                     }        
-                    $r.= "</tr>";
+                    $r .= "</tr>";
                     $no++;    
                 }    
-                $r.= "</tr>"; 
-                echo  $r;
+                $r .= "</tr>"; 
+                echo $r;
                 ?>
                 </table>
-            </div>
-        </div>
-
-        <div class="panel panel-primary">
-            <div class="panel-heading"><strong>Matriks Solusi Ideal</strong></div>
-            <div class="panel-body oxa">
-                <table class="table table-bordered table-striped table-hover">
-                <?php    
-                $r="";            
-                $ideal = TOPSIS_solusi_ideal($terbobot);
-                
-                $r.= "<tr><th></th>";   	
-                $no=1;	
-                foreach($ideal[key($ideal)] as $key => $value){
-                    $r.= "<th>".$key."</th>";
-                    $no++;      
-                }    
-                
-                $no=1;	
-                foreach($ideal as $key => $value){
-                    $r.= "<tr>";
-                    $r.= "<th>".$key."</th>";
-                    foreach($value as $k => $v){
-                        $r.= "<td>".round($v,5)."</td>";
-                    }        
-                    $r.= "</tr>";
-                    $no++;    
-                }    
-                $r.= "</tr>"; 
-                echo  $r;
-                ?>
-                </table>
-            </div>
-        </div>
-
-        <div class="panel panel-primary">
-            <div class="panel-heading"><strong>Jarak Solusi &amp; Nilai Preferensi</strong></div>
-            <div class="panel-body oxa">
-                <table class="table table-bordered table-striped table-hover">
-                    <tr>
-                        <th></th>
-                        <th>Positif</th>
-                        <th>Negatif</th>
-                        <th>Preferensi</th>
-                    </tr>
-                <?php            
-                $jarak = TOPSIS_jarak_solusi($terbobot, $ideal);        
-                $pref = TOPSIS_preferensi($jarak);
-                                
-                foreach($normal as $key => $value){
-                    echo"<tr>";
-                    echo"<th>$key</th>";
-                    echo"<td>".round($jarak[$key]['positif'], 5)."</td>";
-                    echo"<td>".round($jarak[$key]['negatif'], 5)."</td>";
-                    echo"<td>".round($pref[$key], 5)."</td>";
-                    echo "</tr>";
-                    $no++;    
-                }                            
-                ?>
-                </table>        
             </div>
         </div>
 
@@ -314,30 +254,30 @@
             <div class="panel-body oxa">
                 <table class="table table-bordered table-striped table-hover">
                 <tr>
-                    <th></th>
+                    <th>Alternatif</th>
                     <th>Total</th>
                     <th>Rank</th>
                 </tr>
-                <?php     
-                
-                $rank = get_rank($pref);
-                
-                foreach($normal as $key => $value){
-                    $db->query("UPDATE tb_alternatif SET total='$pref[$key]', rank='$rank[$key]' WHERE kode_alternatif='$key'");
-                    echo"<tr>";
-                    echo"<th>$key - $ALTERNATIF[$key]</th>";
-                    echo "<td class='text-primary'>".round($pref[$key], 3)."</td>";
-                    echo "<td class='text-primary'>".$rank[$key]."</td>";
+                <?php    
+                $total_saw = SAW_total($terbobot_saw);
+                $rank_saw = get_rank($total_saw);
+
+                foreach ($total_saw as $key => $value) {
+                    $db->query("UPDATE tb_alternatif SET total='$value', rank='$rank_saw[$key]' WHERE kode_alternatif='$key'");
+                    echo "<tr>";
+                    echo "<th>$key - $ALTERNATIF[$key]</th>";
+                    echo "<td class='text-primary'>" . round($value, 3) . "</td>";
+                    echo "<td class='text-primary'>" . $rank_saw[$key] . "</td>";
                     echo "</tr>";
-                    $no++;    
                 }                            
                 ?>
-                </table>            
+                </table>
                 <div class="form-group">
                     <a class="btn btn-default" target="_blank" href="cetak.php?m=hitung"><span class="glyphicon glyphicon-print"></span> Cetak</a>
-                </div>    
+                </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 <?php endif?>

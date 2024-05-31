@@ -371,3 +371,102 @@ function get_rank($array){
     }
     return $new;
 }
+
+function SAW_get_hasil_analisa(){
+    global $db;
+    $rows = $db->get_results("SELECT a.kode_alternatif, k.kode_kriteria, ra.nilai
+        FROM tb_alternatif a 
+            INNER JOIN tb_rel_alternatif ra ON ra.kode_alternatif=a.kode_alternatif
+            INNER JOIN tb_kriteria k ON k.kode_kriteria=ra.kode_kriteria
+        ORDER BY a.kode_alternatif, k.kode_kriteria");
+    $data = array();
+    foreach($rows as $row){
+        $data[$row->kode_alternatif][$row->kode_kriteria] = $row->nilai;
+    }
+    return $data;
+}
+
+function SAW_hasil_analisa($echo=true){
+    global $db, $ALTERNATIF, $KRITERIA;
+
+    $data = SAW_get_hasil_analisa();
+    
+    if(!$echo)
+        return $data;
+          
+    $r = "<tr><th></th>";    
+    foreach($data[key($data)] as $key => $value){
+        $r.= "<th>".$KRITERIA[$key]['nama_kriteria']."</th>";
+    }    
+    
+    foreach($data as $key => $value){
+        $r.= "<tr>";
+        $r.= "<th nowrap>".$ALTERNATIF[$key]."</th>";
+        foreach($value as $k => $v){
+            $r.= "<td>".$v."</td>";
+        }        
+        $r.= "</tr>";
+    }    
+    $r.= "</tr>";
+    return $r;
+}
+
+function SAW_normalize($array){
+    global $KRITERIA;
+    $data = array();
+    $minMax = array();
+    
+    // Menghitung nilai min dan max untuk setiap kriteria
+    foreach($array as $key => $value){
+        foreach($value as $k => $v){
+            if (!isset($minMax[$k])) {
+                $minMax[$k] = array('min' => $v, 'max' => $v);
+            } else {
+                if ($v < $minMax[$k]['min']) $minMax[$k]['min'] = $v;
+                if ($v > $minMax[$k]['max']) $minMax[$k]['max'] = $v;
+            }
+        }
+    }
+    
+    // Melakukan normalisasi nilai
+    foreach($array as $key => $value){
+        foreach($value as $k => $v){
+            if ($KRITERIA[$k]['atribut'] == 'benefit') {
+                $data[$key][$k] = $v / $minMax[$k]['max'];
+            } else {
+                $data[$key][$k] = $minMax[$k]['min'] / $v;
+            }
+        }
+    }
+    
+    return $data;
+}
+
+function SAW_normal_terbobot($array, $bobot){    
+    $data = array();
+    
+    // Mengalikan nilai normalisasi dengan bobot kriteria
+    foreach($array as $key => $value){                
+        foreach($value as $k => $v){
+            $data[$key][$k] = $v * $bobot[$k];
+        }
+    }    
+    
+    return $data;
+}
+
+function SAW_total($array){
+    global $KRITERIA;
+    
+    $temp = array();
+    
+    // Menjumlahkan nilai terbobot untuk setiap alternatif
+    foreach($array as $key => $value){
+        $temp[$key] = 0;
+        foreach($value as $k => $v){
+            $temp[$key] += $v;
+        }
+    }
+    
+    return $temp;
+}
