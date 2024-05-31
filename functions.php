@@ -8,7 +8,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
 include'includes/general.php';    
 include'includes/paging.php';
     
-$mod = $_GET['m'];
+$act = isset($_GET['m']) ? $_GET['m'] : '';  
 $act = isset($_GET['act']) ? $_GET['act'] : '';  
 
 $nRI = array (
